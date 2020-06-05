@@ -1,0 +1,9 @@
+{
+  "requests": [
+    {
+      "method": "get",
+      "status": 200,
+      "url": "/?foo=bar"
+    }
+  ]
+}
