@@ -1,31 +1,41 @@
 # Generate unit tests for HTTP clients with fixugen
 
-[Mocha](https://mochajs.org/) is used a unit testing framework. Invoke fixugen in a .spec file with Mocha environment injected as usual.
+Generate unit tests with fixugen and mocks HTTP responses [nock](https://www.npmjs.com/package/nock). Useful for modules that export a Javascript interface for i.e. REST APIs.
 
-Provides test callbacks with [Fixura's](https://www.npmjs.com/package/@natlibfi/fixura) functions to fetch test fixtures.
+Uses [fixugen's](https://www.npmjs.com/package/@natlibfi/fixugen) **useMetadataFile** so your fixture directories must contain **metadata.json** file.
 
-## Usage
-The test fixture directory is parsed as follows: Each subdirectory becomes a unit test group (Mocha's `describe`) and inner subdirectories each represent individual tests (Mocha's `it`).
-
-```js
-import generateTests from '@natlibfi/fixugen';
+# Usage
+import 'fetch' from 'node-fetch';
+import {expect} from 'chai';
+import generateTests from '@natlibfi/fixugen-http-client';
 
 generateTests({
-  path: [__dirname, '..', 'test-fixtures'],
-  callback: ({getFixture}) => {
-    const expectedValue = getFixture('value.txt');
-    const value = generateSomething();
-    expect(value).to.equal(expectedValue);
-  }
+  callback,
+  path: [__dirname, '..', 'test-fixtures']
 });
-```
 
-### Options
-- **callback**: A callback function passed to Mocha's `it`. Receives Fixura's function as arguments.
-- **path**: An array of path components which make up a path to the test fixtures directory
-- **fixuraOptions**: Options that are passed to Fixura.
-- **useMetadataFile**: If set to true, reads and parses a file named `metadata.json` in each unit test directory. The content must be a JSON object and it's properties as passed to the unit test callback function. If a property `description` is present, it is used as the test's description. Defaults to *false*.
-- **mocha**: An object which maps the following properties to Mocha's corresponding callbacks: **after**, **before**, **afterEach**, **beforeEach**-
+function callback({getFixture}) {
+  // The base URL is always http://foo.bar
+  const response = await fetch('http://foo.bar');
+  expect(response.status).to.equal(200);
+}
+```
+# Configuration
+An array property **requests** must be present in **metadata.json** file. It supports the following properties:
+- **status**: HTTP status code (Number). **Mandatory**.
+- **method**: HTTP method in lowercase. **Mandatory**.
+- **url**: URL of the request. This is only the location and parameters part of the actual URL. The base URL is always `http://foo.bar`. Must start with `/`. **Mandatory**.
+- **requestHeaders**: An object representing requests headers.
+- **responseHeaders**: An object representing response headers.
+
+This configuration is also passed to the callback as the property **requests**.
+
+# Request and response payloads
+The fixture directory for each unit test can have request- and response payload fixtures which must match the following filename pattern:
+`/^request[0-9]+`
+`/^response[0-9]+`
+
+Where `[0-9]+` denotes the index number of the fixture (Requests and responses are mocked in that order).
 
 ## License and copyright
 
