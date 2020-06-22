@@ -14,7 +14,7 @@
 		"url": "git@github.com:natlibfi/fixugen-http-client-js.git"
 	},
 	"license": "LGPL-3.0+",
-	"version": "1.0.0-alpha.2",
+	"version": "1.0.0",
 	"main": "./dist/index.js",
 	"engines": {
 		"node": ">=12"
@@ -23,7 +23,6 @@
 		"access": "public"
 	},
 	"scripts": {
-		"start": "node dist/index.js",
 		"lint": "eslint src",
 		"lint:dev": "eslint --fix src",
 		"test:base": "cross-env NODE_ENV=test nyc mocha --require @babel/register",
