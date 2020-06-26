@@ -54,12 +54,12 @@ export default ({path, callback, fixura = {}, mocha = {}}) => {
 
     function generateNockMocks() {
       const requestFixtures = getFixtures({
-        components: [/^request[0-9]+\.xml$/u],
+        components: [/^request[0-9]+\..*$/u],
         reader: READERS.TEXT
       });
 
       const responseFixtures = getFixtures({
-        components: [/^response[0-9]+\.xml$/u],
+        components: [/^response[0-9]+\..*$/u],
         reader: READERS.TEXT
       });
 
