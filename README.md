@@ -5,6 +5,7 @@ Generate unit tests with fixugen and mocks HTTP responses [nock](https://www.npm
 Uses [fixugen's](https://www.npmjs.com/package/@natlibfi/fixugen) **useMetadataFile** so your fixture directories must contain **metadata.json** file.
 
 # Usage
+```js
 import 'fetch' from 'node-fetch';
 import {expect} from 'chai';
 import generateTests from '@natlibfi/fixugen-http-client';
