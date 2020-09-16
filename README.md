@@ -22,6 +22,12 @@ function callback({getFixture}) {
 }
 ```
 # Configuration
+The following optional properties are supported in the factory function:
+- **mocha**: Mocha options
+- **fixura:** Fixura options
+- **recurse**: Fixugen's *recurse* option. Defaults to **true**
+
+## metadata.json
 An array property **requests** must be present in **metadata.json** file. It supports the following properties:
 - **status**: HTTP status code (Number). **Mandatory**.
 - **method**: HTTP method in lowercase. **Mandatory**.
@@ -31,7 +37,7 @@ An array property **requests** must be present in **metadata.json** file. It sup
 
 This configuration is also passed to the callback as the property **requests**.
 
-# Request and response payloads
+## Request and response payloads
 The fixture directory for each unit test can have request- and response payload fixtures which must match the following filename pattern:
 `/^request[0-9]+`
 `/^response[0-9]+`

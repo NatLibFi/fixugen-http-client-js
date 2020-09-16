@@ -30,9 +30,9 @@ import nock from 'nock';
 import {READERS} from '@natlibfi/fixura';
 import generateTests from '@natlibfi/fixugen';
 
-export default ({path, callback, fixura = {}, mocha = {}}) => {
+export default ({path, callback, recurse = true, fixura = {}, mocha = {}}) => {
   generateTests({
-    path,
+    path, recurse,
     callback: httpCallback,
     useMetadataFile: true,
     fixura: {
