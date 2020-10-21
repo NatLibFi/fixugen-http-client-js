@@ -6,7 +6,7 @@ Uses [fixugen's](https://www.npmjs.com/package/@natlibfi/fixugen) **useMetadataF
 
 # Usage
 ```js
-import 'fetch' from 'node-fetch';
+import 'fetch' from 'node-fetch';asdsdasaasd
 import {expect} from 'chai';
 import generateTests from '@natlibfi/fixugen-http-client';
 
