@@ -32,7 +32,7 @@ function callback({getFixtures, requests}) {
     const [request] = requests;
     if (request) {
       debug(`Testing request ${index}`);
-      const {method, url, queryPart = '', status, requestHeaders = {}, responseHeaders = {}} = request;
+      const {method, url, queryPart = '', status, requestHeaders = {}, responseHeaders = {}, expectedData = undefined} = request;
 
       const expectedResponsePayload = responseFixtures[index] || '';
       debug(`We have expextedResponsePayload: ${expectedResponsePayload}`);
@@ -43,9 +43,14 @@ function callback({getFixtures, requests}) {
       debug(`We have expected status: ${status}`);
       expect(response.status).to.equal(status);
       expect(formatResponseHeaders(response.headers)).to.eql(responseHeaders);
-      expect(await response.text()).to.equal(expectedResponsePayload);
+      const responseText = await response.text();
+      expect(responseText).to.equal(expectedResponsePayload);
+      // eslint-disable-next-line functional/no-conditional-statements
+      if (expectedData) {
+        expect(responseText).to.equal(expectedData);
+      }
 
-      return iterate(requests.slice(1));
+      return iterate(requests.slice(1), index + 1);
     }
 
     function formatResponseHeaders(headers) {

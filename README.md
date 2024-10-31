@@ -33,7 +33,7 @@ An array property **requests** must be present in **metadata.json** file. It sup
 - **status**: HTTP status code (Number). **Mandatory**.
 - **method**: HTTP method in uppercase. **Mandatory**.
 - **url**: URL of the request. This is only the location and parameters part of the actual URL. The base URL is always `http://foo.bar`. Must start with `/`. **Mandatory**.
-- **query**: An object representing requests query parameters (Note: these can also be given as string in **url**)
+- **query**: An object representing requests query parameters (Note: these can also be given as string as part of **url**)
 - **requestHeaders**: An object representing requests headers.
 - **responseHeaders**: An object representing response headers.
 
@@ -44,7 +44,7 @@ The fixture directory for each unit test can have request- and response payload 
 `/^request[0-9]+`
 `/^response[0-9]+`
 
-Where `[0-9]+` denotes the order in which requests and responses are mocked (at least for single digits). Note that if unit test has several requests, request and response payload fixtures are matched to these in order, regardless of the digit used in file name. (Ie if we have three requests and request1.txt and response3.txt fixtures, both request1.txt and response3.txt get mapped to first request.)
+Where `[0-9]+` denotes the order in which requests and responses are mocked (at least for single digits). Note that if unit test has several requests, request and response payload fixtures are matched to these in order, regardless of the digit used in file name. (Ie if we have three requests and request1.txt and response3.txt fixtures, both request1.txt and response3.txt get mapped to first request and rest of the request do not have request or response payload fixtures available.)
 
 
 ## License and copyright
