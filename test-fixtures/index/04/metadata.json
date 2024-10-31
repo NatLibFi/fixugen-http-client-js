@@ -1,0 +1,11 @@
+{
+  "requests": [
+    {
+      "method": "GET",
+      "status": 200,
+      "url": "/",
+      "query": {"baz": "zook"},
+      "queryPart": "?baz=zook"
+    }
+  ]
+}
