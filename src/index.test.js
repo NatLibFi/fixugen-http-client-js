@@ -1,30 +1,29 @@
-import {expect} from 'chai';
-import fetch from 'node-fetch';
-import generateTests from '.';
+import assert from 'node:assert';
+import generateTests from './index.js';
 
 generateTests({
   callback,
-  path: [__dirname, '..', 'test-fixtures']
+  path: [import.meta.dirname, '..', 'test-fixtures']
 });
 
 function callback({getFixture, requests}) {
   return iterate(requests);
 
   async function iterate(requests, index = 0) {
-    const [request] = requests;
+    const [request, ...rest] = requests;
 
     if (request) {
-      const {method, url, status, requestHeaders = {}, responseHeaders = {}} = request;
+      const {method, url, query = '', status, requestHeaders = {}, responseHeaders = {}} = request;
 
       const expectedResponsePayload = getFixture(`response${index}.txt`) || '';
       const requestPayload = getFixture(`request${index}.txt`);
-      const response = await fetch(`http://foo.bar${url}`, {method, headers: requestHeaders}, requestPayload);
+      const response = await fetch(`http://foo.bar${url}${query}`, {method, headers: requestHeaders}, requestPayload);
 
-      expect(response.status).to.equal(status);
-      expect(formatResponseHeaders(response.headers)).to.eql(responseHeaders);
-      expect(await response.text()).to.equal(expectedResponsePayload);
+      assert.equal(response.status, status);
+      assert.deepStrictEqual(formatResponseHeaders(response.headers), responseHeaders);
+      assert.equal(await response.text(), expectedResponsePayload);
 
-      return iterate(requests.slice(1));
+      return iterate(rest, index + 1);
     }
 
     function formatResponseHeaders(headers) {

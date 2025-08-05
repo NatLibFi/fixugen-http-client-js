@@ -1,0 +1,10 @@
+{
+  "description": "Mock single request successfully (error status and response payload)",
+  "requests": [
+    {
+      "method": "get",
+      "status": 404,
+      "url": "/test/"
+    }
+  ]
+}
