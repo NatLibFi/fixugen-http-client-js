@@ -1,8 +1,12 @@
 import nock from 'nock';
 import {READERS} from '@natlibfi/fixura';
 import generateTests from '@natlibfi/fixugen';
+import createDebugLogger from 'debug';
 
-export default ({path, callback, recurse = true, fixura = {}, mocha = {}}) => {
+// eslint-disable-next-line no-unused-vars
+const debug = createDebugLogger('@natlibfi/fixugen-http-client');
+
+export default ({path, callback, recurse = true, fixura = {}, hooks = {}}) => {
   generateTests({
     path, recurse,
     callback: httpCallback,
@@ -11,8 +15,8 @@ export default ({path, callback, recurse = true, fixura = {}, mocha = {}}) => {
       ...fixura,
       failWhenNotFound: false
     },
-    mocha: {
-      ...mocha,
+    hooks: {
+      ...hooks,
       before: () => nock.disableNetConnect(),
       after: () => nock.enableNetConnect(),
       afterEach: () => nock.cleanAll()
@@ -35,8 +39,8 @@ export default ({path, callback, recurse = true, fixura = {}, mocha = {}}) => {
         reader: READERS.TEXT
       });
 
-      return requests.forEach(({method, requestHeaders = {}, responseHeaders = {}, url, status}, index) => {
-        nock('http://foo.bar', requestHeaders)[method](url, requestFixtures[index])
+      return requests.forEach(({method, requestHeaders = {}, responseHeaders = {}, url, status, query = ''}, index) => {
+        nock('http://foo.bar', requestHeaders)[method](`${url}${query}`, requestFixtures[index])
           .reply(status, responseFixtures[index], responseHeaders);
       });
     }

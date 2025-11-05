@@ -1,0 +1,17 @@
+{
+  "description": "Mock multiple requests with response payloads successfully - first request has no fixtures",
+  "requests": [
+    {
+      "method": "get",
+      "status": 200,
+      "url": "/",
+      "query": "?baz=zook"
+    },
+    {
+      "method": "get",
+      "status": 200,
+      "url": "/",
+      "query": "?baz=bar"
+    }
+  ]
+}
