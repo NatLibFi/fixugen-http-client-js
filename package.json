@@ -37,11 +37,12 @@
 	"dependencies": {
 		"@natlibfi/fixugen": "^3.0.0",
 		"@natlibfi/fixura": "^4.0.0",
-		"nock": "^14.0.5"
+		"debug": "^4.4.3",
+		"nock": "^14.0.10"
 	},
 	"devDependencies": {
 		"cross-env": "^10.1.0",
-		"esbuild": "^0.25.12",
+		"esbuild": "^0.27.1",
 		"eslint": "^9.39.1"
 	}
 }
