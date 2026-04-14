@@ -1,5 +1,5 @@
 import assert from 'node:assert';
-import generateTests from './index.js';
+import generateTests from './index.ts';
 
 generateTests({
   callback,
@@ -17,7 +17,7 @@ function callback({getFixture, requests}) {
 
       const expectedResponsePayload = getFixture(`response${index}.txt`) || '';
       const requestPayload = getFixture(`request${index}.txt`);
-      const response = await fetch(`http://foo.bar${url}${query}`, {method, headers: requestHeaders}, requestPayload);
+      const response = await fetch(`http://foo.bar${url}${query}`, {method, headers: requestHeaders, body: requestPayload});
 
       assert.equal(response.status, status);
       assert.deepStrictEqual(formatResponseHeaders(response.headers), responseHeaders);

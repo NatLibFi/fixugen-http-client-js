@@ -3,10 +3,33 @@ import {READERS} from '@natlibfi/fixura';
 import generateTests from '@natlibfi/fixugen';
 import createDebugLogger from 'debug';
 
-// eslint-disable-next-line no-unused-vars
+// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
 const debug = createDebugLogger('@natlibfi/fixugen-http-client');
 
-export default ({path, callback, recurse = true, fixura = {}, hooks = {}}) => {
+interface timedHooks {
+  before?: () => void,
+  beforeEach?: () => void,
+  after?: () => void,
+  afterEach?: () => void
+}
+
+interface FixugenHttpClientOpts {
+  // eslint-disable-next-line no-unused-vars
+  callback: (callbackOpts) => void,
+  path: string[],
+  recurse?: boolean,
+  fixura?: object,
+  hooks?: timedHooks
+}
+
+export default ({
+  path,
+  callback,
+  recurse = true,
+  fixura = {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  hooks = {before: () => { }, beforeEach: () => { }, after: () => { }, afterEach: () => { }}
+}: FixugenHttpClientOpts) => {
   generateTests({
     path, recurse,
     callback: httpCallback,
@@ -15,18 +38,16 @@ export default ({path, callback, recurse = true, fixura = {}, hooks = {}}) => {
       ...fixura,
       failWhenNotFound: false
     },
-    hooks: {
-      ...hooks,
-      before: () => nock.disableNetConnect(),
-      after: () => nock.enableNetConnect(),
-      afterEach: () => nock.cleanAll()
-    }
+    hooks
   });
 
-  function httpCallback({getFixtures, requests, ...options}) {
-
+  async function httpCallback({getFixtures, requests, ...options}) {
+    nock.disableNetConnect()
     generateNockMocks();
-    return callback({...options, getFixtures, requests});
+    await callback({...options, getFixtures, requests});
+    nock.cleanAll();
+    nock.enableNetConnect();
+    return;
 
     function generateNockMocks() {
       const requestFixtures = getFixtures({

@@ -12,7 +12,7 @@ import generateTests from '@natlibfi/fixugen-http-client';
 
 generateTests({
   callback,
-  path: [__dirname, '..', 'test-fixtures']
+  path: [import.meta.dirname, '..', 'test-fixtures']
 });
 
 function callback({getFixture}) {
