@@ -6,8 +6,7 @@ Uses [fixugen's](https://www.npmjs.com/package/@natlibfi/fixugen) **useMetadataF
 
 # Usage
 ```js
-import 'fetch' from 'node-fetch';
-import {expect} from 'chai';
+import assert from 'node:assert';
 import generateTests from '@natlibfi/fixugen-http-client';
 
 generateTests({
@@ -18,12 +17,12 @@ generateTests({
 function callback({getFixture}) {
   // The base URL is always http://foo.bar
   const response = await fetch('http://foo.bar');
-  expect(response.status).to.equal(200);
+  assert.equal(response.status, 200);
 }
 ```
 # Configuration
 The following optional properties are supported in the factory function:
-- **mocha**: Mocha options
+- **hooks**: Timed hook options (before, beforeEach, after, afterEach)
 - **fixura:** Fixura options
 - **recurse**: Fixugen's *recurse* option. Defaults to **true**
 
