@@ -1,10 +1,8 @@
 import nock from 'nock';
 import {READERS} from '@natlibfi/fixura';
 import generateTests from '@natlibfi/fixugen';
-import createDebugLogger from 'debug';
-
-// eslint-disable-next-line no-unused-vars,@typescript-eslint/no-unused-vars
-const debug = createDebugLogger('@natlibfi/fixugen-http-client');
+//import createDebugLogger from 'debug';
+//const debug = createDebugLogger('@natlibfi/fixugen-http-client');
 
 interface timedHooks {
   before?: () => void,
