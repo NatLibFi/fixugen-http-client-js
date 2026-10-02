@@ -1,23 +1,28 @@
 import nock from 'nock';
 import {READERS} from '@natlibfi/fixura';
-import generateTests from '@natlibfi/fixugen';
+import generateTests, {type CallbackArgs, type FixugenOpts} from '@natlibfi/fixugen';
 //import createDebugLogger from 'debug';
 //const debug = createDebugLogger('@natlibfi/fixugen-http-client');
 
-interface timedHooks {
-  before?: () => void,
-  beforeEach?: () => void,
-  after?: () => void,
-  afterEach?: () => void
+// The fixura 5.x object-form d.ts omits the `filter` property, but the
+// object form spreads every property at runtime, so a regex filter is
+// applied to the files in the fixture directory.
+interface GetFixturesOpts {
+  components?: string[];
+  reader?: number
+};
+
+export interface Request {
+  method: string,
+  url: string,
+  query?: string,
+  status: number,
+  requestHeaders?: Record<string, string>,
+  responseHeaders?: Record<string, string>
 }
 
-interface FixugenHttpClientOpts {
-  // eslint-disable-next-line no-unused-vars
-  callback: (callbackOpts) => void,
-  path: string[],
-  recurse?: boolean,
-  fixura?: object,
-  hooks?: timedHooks
+export interface FixugenHttpClientOpts extends FixugenOpts {
+  useMetadataFile: true,
 }
 
 export default ({
@@ -25,8 +30,7 @@ export default ({
   callback,
   recurse = true,
   fixura = {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  hooks = {before: () => { }, beforeEach: () => { }, after: () => { }, afterEach: () => { }}
+  hooks = {}
 }: FixugenHttpClientOpts) => {
   generateTests({
     path, recurse,
@@ -39,8 +43,10 @@ export default ({
     hooks
   });
 
-  async function httpCallback({getFixtures, requests, ...options}) {
+  async function httpCallback(callbackOpts: CallbackArgs) {
     nock.disableNetConnect()
+    const {getFixtures, ...options} = callbackOpts;
+    const requests = (options['requests'] ?? []) as Request[];
     generateNockMocks();
     await callback({...options, getFixtures, requests});
     nock.cleanAll();
@@ -49,18 +55,19 @@ export default ({
 
     function generateNockMocks() {
       const requestFixtures = getFixtures({
-        components: [/^request[0-9]+\..*$/u],
+        filter: /^request[0-9]+\..*$/u,
         reader: READERS.TEXT
-      });
+      } as GetFixturesOpts);
 
       const responseFixtures = getFixtures({
-        components: [/^response[0-9]+\..*$/u],
+        filter: /^response[0-9]+\..*$/u,
         reader: READERS.TEXT
-      });
+      } as GetFixturesOpts);
 
       return requests.forEach(({method, requestHeaders = {}, responseHeaders = {}, url, status, query = ''}, index) => {
-        nock('http://foo.bar', requestHeaders)[method](`${url}${query}`, requestFixtures[index])
-          .reply(status, responseFixtures[index], responseHeaders);
+        nock('http://foo.bar', requestHeaders as unknown as nock.Options)
+          .intercept(`${url}${query}`, method, requestFixtures[index] as string | undefined)
+          .reply(status, responseFixtures[index] as string | undefined, responseHeaders);
       });
     }
   }

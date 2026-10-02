@@ -1,36 +1,42 @@
 import assert from 'node:assert';
-import generateTests from './index.ts';
+import type {CallbackArgs} from '@natlibfi/fixugen';
+import generateTests, {type Request} from './index.ts';
 
 generateTests({
+  useMetadataFile: true,
   callback,
   path: [import.meta.dirname, '..', 'test-fixtures']
 });
 
-function callback({getFixture, requests}) {
+function callback(callbackOpts: CallbackArgs) {
+  const {getFixture} = callbackOpts;
+  const requests = (callbackOpts['requests'] ?? []) as Request[];
   return iterate(requests);
 
-  async function iterate(requests, index = 0) {
+  async function iterate(requests: Request[], index = 0) {
     const [request, ...rest] = requests;
 
-    if (request) {
-      const {method, url, query = '', status, requestHeaders = {}, responseHeaders = {}} = request;
-
-      const expectedResponsePayload = getFixture(`response${index}.txt`) || '';
-      const requestPayload = getFixture(`request${index}.txt`);
-      const response = await fetch(`http://foo.bar${url}${query}`, {method, headers: requestHeaders, body: requestPayload});
-
-      assert.equal(response.status, status);
-      assert.deepStrictEqual(formatResponseHeaders(response.headers), responseHeaders);
-      assert.equal(await response.text(), expectedResponsePayload);
-
-      return iterate(rest, index + 1);
+    if (!request) {
+      return;
     }
 
-    function formatResponseHeaders(headers) {
+    const {method, url, query = '', status, requestHeaders = {}, responseHeaders = {}} = request;
+
+    const expectedResponsePayload = getFixture(`response${index}.txt`) || '';
+    const requestPayload = getFixture(`request${index}.txt`) as string | undefined;
+    const response = await fetch(`http://foo.bar${url}${query}`, {method, headers: requestHeaders, body: requestPayload});
+
+    assert.equal(response.status, status);
+    assert.deepStrictEqual(formatResponseHeaders(response.headers), responseHeaders);
+    assert.equal(await response.text(), expectedResponsePayload);
+
+    return iterate(rest, index + 1);
+
+    function formatResponseHeaders(headers: Headers) {
       const iterator = headers.entries();
       return iterate();
 
-      function iterate(results = {}) {
+      function iterate(results: Record<string, string> = {}) {
         const {value, done} = iterator.next();
 
         if (done) {

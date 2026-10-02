@@ -35,8 +35,8 @@
 		"dev:debug": "cross-env LOG_LEVEL=debug DEBUG=@natlibfi/* NODE_ENV=test npm run watch:test"
 	},
 	"dependencies": {
-		"@natlibfi/fixugen": "^4.0.0-alpha.1",
-		"@natlibfi/fixura": "^5.0.0-alpha.3",
+		"@natlibfi/fixugen": "^4.0.0",
+		"@natlibfi/fixura": "^5.0.0",
 		"debug": "^4.4.3",
 		"nock": "^14.0.12"
 	},
