@@ -1,5 +1,5 @@
 import nock from 'nock';
-import {READERS} from '@natlibfi/fixura';
+import {READERS, type Reader} from '@natlibfi/fixura';
 import generateTests, {type CallbackArgs, type FixugenOpts} from '@natlibfi/fixugen';
 //import createDebugLogger from 'debug';
 //const debug = createDebugLogger('@natlibfi/fixugen-http-client');
@@ -9,7 +9,7 @@ import generateTests, {type CallbackArgs, type FixugenOpts} from '@natlibfi/fixu
 // applied to the files in the fixture directory.
 interface GetFixturesOpts {
   components?: string[];
-  reader?: number
+  reader?: Reader
 };
 
 export interface Request {
