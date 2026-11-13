@@ -1,8 +1,14 @@
-# Generate unit tests for HTTP clients with fixugen
+# Generate unit tests for HTTP clients with fixugen [![NPM Version](https://img.shields.io/npm/v/@natlibfi/fixugen-http-client.svg)](https://npmjs.org/package/@natlibfi/fixugen-http-client)
 
 Generate unit tests with fixugen and mocks HTTP responses [nock](https://www.npmjs.com/package/nock). Useful for modules that export a Javascript interface for i.e. REST APIs.
 
 Uses [fixugen's](https://www.npmjs.com/package/@natlibfi/fixugen) **useMetadataFile** so your fixture directories must contain **metadata.json** file.
+
+## Workflow status
+| Branch | Workflow status |
+|--------|-----------------|
+| main   | ![Workflow status badge for branch main](https://github.com/NatLibFi/fixugen-http-client-js/actions/workflows/melinda-node-tests-and-publish.yml/badge.svg?branch=main) |
+| test   | ![Workflow status badge for branch test](https://github.com/NatLibFi/fixugen-http-client-js/actions/workflows/melinda-node-tests-and-publish.yml/badge.svg?branch=test) |
 
 # Usage
 ```js
